@@ -1,0 +1,9 @@
+namespace ScribanSourceGeneratorExample;
+
+class Class1
+{
+{{- $x = ["a","abc","ABC"] -}}
+{{- for $i in 0..<$x.size }}
+    public const string X{{ $i }} = "{{ $x[$i] }}";
+{{- end }}
+}

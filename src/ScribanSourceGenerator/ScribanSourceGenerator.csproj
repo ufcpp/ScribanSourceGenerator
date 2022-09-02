@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,12 +11,46 @@
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>ScribanSourceGenerator</PackageId>
+    <Title>ScribanSourceGenerator</Title>
+    <Description>Roslyn source generator with Scriban templating language.</Description>
+    <PackageProjectUrl>https://github.com/ufcpp/ScribanSourceGenerator</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Nobuyuki Iwanaga</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Scriban" Version="5.5.0" IncludeAssets="Build" />
+    <PackageReference Include="Scriban" Version="5.5.0" IncludeAssets="Build" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" />
   </ItemGroup>
+
+  <!--
+  https://www.meziantou.net/packaging-a-roslyn-analyzer-with-nuget-dependencies.htm
+  -->
+  <Target Name="AddNuGetDlls" BeforeTargets="_GetPackageFiles">
+    <JoinItems Left="@(ResolvedCompileFileDefinitions)" LeftKey="NuGetPackageId" LeftMetadata="*"
+               Right="@(PackageReference)" RightKey="" RightMetadata="*"
+               ItemSpecToUse="Left">
+      <Output TaskParameter="JoinResult" ItemName="_PackagesToPack" />
+    </JoinItems>
+
+    <ItemGroup>
+      <_PackagesToPack Remove="@(_PackagesToPack)" Condition="%(NuGetPackageId) == 'NETStandard.Library'" />
+      <_PackagesToPack Remove="@(_PackagesToPack)" Condition="%(NuGetPackageId) == 'Microsoft.CodeAnalysis.CSharp.Workspaces'" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Adding DLLs from the following packages: @(_PackagesToPack->'%(NuGetPackageId)')" />
+
+    <ItemGroup>
+      <None Include="@(_PackagesToPack)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+      <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+  </Target>
 
 </Project>

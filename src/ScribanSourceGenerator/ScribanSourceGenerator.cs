@@ -24,7 +24,7 @@ public class ScribanSourceGenerator : IIncrementalGenerator
             .Where(x => x is not null)
             .Collect();
 
-        context.RegisterImplementationSourceOutput(provider, (context, templates) =>
+        context.RegisterSourceOutput(provider, (context, t) =>
         {
             if (!templates.Any()) return;
 
@@ -72,7 +72,7 @@ public class ScribanSourceGenerator : IIncrementalGenerator
             .Where(f => f.Path.EndsWith(".scriban"))
             .Select((f, c) => (filename: Path.GetFileName(f.Path), template: f.GetText()!.ToString()));
 
-        context.RegisterImplementationSourceOutput(additionalFiles, static (context, arg) =>
+        context.RegisterSourceOutput(additionalFiles, static (context, arg) =>
         {
             //todo: error handling
             var hintPath = arg.filename + ".cs";

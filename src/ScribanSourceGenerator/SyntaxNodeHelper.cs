@@ -6,6 +6,51 @@ namespace ScribanSourceGenerator;
 
 public class SyntaxNodeHelper
 {
+    public static string AppendName(StringBuilder buffer, SyntaxNode node)
+    {
+        buffer.Clear();
+
+        appendTypeName(buffer, node);
+
+        // file name + line number
+        var span = node.GetLocation().GetMappedLineSpan();
+        var filename = Path.GetFileNameWithoutExtension(span.Path);
+        buffer.Append($"[{filename}]{span.StartLinePosition.Line}.cs");
+
+        return buffer.ToString();
+
+        static bool appendTypeName(StringBuilder sb, SyntaxNode? node)
+        {
+            if (node is BaseNamespaceDeclarationSyntax ns)
+            {
+                if (appendTypeName(sb, node.Parent)) sb.Append('_');
+
+                sb.Append($"{ns.Name}");
+
+                return true;
+            }
+            else if (node is TypeDeclarationSyntax t)
+            {
+                if (appendTypeName(sb, node.Parent)) sb.Append('_');
+
+                sb.Append($"{t.Identifier}");
+
+                if (t.TypeParameterList is { } tl)
+                {
+                    foreach (var t1 in tl.Parameters)
+                    {
+                        sb.Append($"`{t1.Identifier}");
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+
     public static int AppendDeclarations(StringBuilder sb, SyntaxNode? node)
     {
         if (node is null) return 0;

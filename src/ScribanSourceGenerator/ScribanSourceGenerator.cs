@@ -21,23 +21,16 @@ public class ScribanSourceGenerator : IIncrementalGenerator
             static (node, _) => node is TypeDeclarationSyntax { AttributeLists.Count: > 0 },
             static (context, _) => ClassNameTemplate.Create(context.SemanticModel, (TypeDeclarationSyntax)context.Node)!
             )
-            .Where(x => x is not null)
-            .Collect();
+            .Where(x => x is not null);
 
         context.RegisterSourceOutput(provider, (context, t) =>
         {
-            if (!templates.Any()) return;
-
             var buffer = new StringBuilder();
 
-            var ordinal = 0;
-            foreach (var t in templates)
-            {
-                context.AddSource(
-                    filename(t.Type, ordinal++, buffer),
-                    Source(render(t, buffer))
-                    );
-            }
+            context.AddSource(
+                SyntaxNodeHelper.AppendName(buffer, t.Type),
+                Source(render(t, buffer))
+                );
         });
 
         static string render(ClassNameTemplate t, StringBuilder buffer)
@@ -55,13 +48,6 @@ public class ScribanSourceGenerator : IIncrementalGenerator
                 buffer.Append(result);
             }
             SyntaxNodeHelper.AppendClose(buffer, nest);
-            return buffer.ToString();
-        }
-
-        static string filename(TypeDeclarationSyntax type, int ordinal, StringBuilder buffer)
-        {
-            buffer.Clear();
-            buffer.Append($"{ordinal}_{type.Identifier.Text}_membertemplate.cs");
             return buffer.ToString();
         }
     }

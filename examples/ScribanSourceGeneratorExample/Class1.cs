@@ -45,11 +45,4 @@ namespace ScribanSourceGeneratorExample
         where T1 : struct
         where T2 : notnull
     { }
-
-    // not supoprted: non-partial class
-    [ScribanSourceGeneretor.ClassMember("")] public class NonPartial1 { }
-    [ScribanSourceGeneretor.ClassMember("")] public record NonPartial2 { }
-    [ScribanSourceGeneretor.ClassMember("")] public record class NonPartial3 { }
-    [ScribanSourceGeneretor.ClassMember("")] public struct NonPartial4 { }
-    [ScribanSourceGeneretor.ClassMember("")] public record struct NonPartial5 { }
 }

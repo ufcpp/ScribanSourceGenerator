@@ -124,13 +124,12 @@ public class SyntaxNodeHelper
 
     public static void AppendClose(StringBuilder sb, int nest)
     {
+        sb.Append('\n');
+
         for (int i = 0; i < nest; i++)
         {
             sb.Append('}');
         }
-        sb.Append("""
-
-
-            """);
+        sb.Append('\n');
     }
 }

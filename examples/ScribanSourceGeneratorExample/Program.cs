@@ -6,7 +6,8 @@ Console.WriteLine("Hello, World!");
     {{ $x = ["a","abc","ABC","xyz"] -}}
     {{- for $i in 0..<$x.size ~}}
         public const string X{{ $i }} = "{{ $x[$i] }}";
-    {{ end }}
+    {{ end ~}}
+    // eof
     """)]
 public partial class A
 {

@@ -45,7 +45,7 @@ jobs:
         VERSION="${arrTag[2]}"
         echo Version: $VERSION
         VERSION="${VERSION//v}"
-        dotnet build -c Release src/ScribanSourceGenerator
+        dotnet build -c Release -p:PackageVersion=$VERSION src/ScribanSourceGenerator
         dotnet pack -c Release -p:PackageVersion=$VERSION src/ScribanSourceGenerator
     - name: Upload Artifact
       uses: actions/upload-artifact@v2

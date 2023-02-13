@@ -4,13 +4,13 @@ namespace ScribanSourceGeneratorExample
 {
     using System.Text;
 
-    [ScribanSourceGeneretor.ClassMember("""
+    [ScribanSourceGenerator.ClassMember("""
         {{ $x = ["a","abc","ABC","xyz"] -}}
         {{- for $i in 0..<$x.size ~}}
             public const string X{{ $i }} = "{{ $x[$i] }}";
         {{ end }}
         """)]
-    [ScribanSourceGeneretor.ClassMember("""
+    [ScribanSourceGenerator.ClassMember("""
         {{- for $i in 0..5 ~}}
             public const int Y{{ $i }} = {{ $i }};
         {{ end }}
@@ -19,28 +19,28 @@ namespace ScribanSourceGeneratorExample
     {
     }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial class ClassB
     {
-        [ScribanSourceGeneretor.ClassMember("")]
+        [ScribanSourceGenerator.ClassMember("")]
         protected partial class Inner
         {
         }
     }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial struct StructA { }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial record R1 { }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial record class R2 { }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial record struct R3 { }
 
-    [ScribanSourceGeneretor.ClassMember("")]
+    [ScribanSourceGenerator.ClassMember("")]
     public partial record struct R<T1, T2>
         where T1 : struct
         where T2 : notnull

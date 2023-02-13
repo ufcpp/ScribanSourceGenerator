@@ -2,7 +2,7 @@
 Console.WriteLine("Hello, World!");
 { }
 
-[ScribanSourceGeneretor.ClassMember("""
+[ScribanSourceGenerator.ClassMember("""
     {{ $x = ["a","abc","ABC","xyz"] -}}
     {{- for $i in 0..<$x.size ~}}
         public const string X{{ $i }} = "{{ $x[$i] }}";

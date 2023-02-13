@@ -7,7 +7,7 @@ public record ClassNameTemplate(TypeDeclarationSyntax Type, string[] Templates)
 {
     public static ClassNameTemplate? Create(SemanticModel semanticModel, TypeDeclarationSyntax type)
     {
-        var args = GetAttribute(semanticModel, type, "ScribanSourceGeneretor.ClassMemberAttribute").ToArray();
+        var args = GetAttribute(semanticModel, type, "ScribanSourceGenerator.ClassMemberAttribute").ToArray();
         if (args.Length == 0) return null;
         return new(type, args);
     }

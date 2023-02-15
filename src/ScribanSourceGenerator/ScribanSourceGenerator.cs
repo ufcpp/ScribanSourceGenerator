@@ -74,8 +74,8 @@ public class ScribanSourceGenerator : IIncrementalGenerator
                 namespace ScribanSourceGenerator;
 
                 [System.Diagnostics.Conditional("TEXT_TEMPLATE_COMPILE_TIME_ONLY")]
-                [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
-                internal sealed class ClassMemberAttribute : Attribute
+                [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
+                internal sealed class ClassMemberAttribute : System.Attribute
                 {
                     public ClassMemberAttribute(string template) { }
                 }

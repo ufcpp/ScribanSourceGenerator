@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="**/*.scriban" />
+    <Compile Include="../Class0.cs" />
   </ItemGroup>
 
   <ItemGroup>

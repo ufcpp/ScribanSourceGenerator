@@ -22,6 +22,7 @@ public class SyntaxNodeHelper
 
         // I want to use AsSpan() if ending support for netstandard2.0.
         var path = node.GetLocation().GetMappedLineSpan().Path;
+        path = Path.GetFullPath(path);
 
         var start = 0;
         var end = 0;

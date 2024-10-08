@@ -59,12 +59,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
-        name: nupkg
+        path: nupkg
     - name: Push to nuget.org
       run: dotnet nuget push ./nupkg/**/*.* --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NugetApiKey }}

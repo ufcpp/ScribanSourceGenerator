@@ -81,7 +81,7 @@ public class SyntaxNodeHelper
         {
             CompilationUnitSyntax u => u.Members,
             TypeDeclarationSyntax t => t.Members,
-            NamespaceDeclarationSyntax n => n.Members,
+            BaseNamespaceDeclarationSyntax n => n.Members,
             _ => [],
         };
 

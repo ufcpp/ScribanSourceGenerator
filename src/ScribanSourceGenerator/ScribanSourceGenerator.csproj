@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -20,11 +20,12 @@
     <Authors>Nobuyuki Iwanaga</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Scriban" Version="5.10.0" IncludeAssets="build" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" />

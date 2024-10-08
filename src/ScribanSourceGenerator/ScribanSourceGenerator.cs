@@ -28,7 +28,7 @@ public class ScribanSourceGenerator : IIncrementalGenerator
             var buffer = new StringBuilder();
 
             context.AddSource(
-                SyntaxNodeHelper.AppendName(buffer, t.Type),
+                SyntaxNodeHelper.GetHintPath(t.Type, buffer),
                 Source(render(t, buffer))
                 );
         });

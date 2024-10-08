@@ -6,49 +6,87 @@ namespace ScribanSourceGenerator;
 
 public class SyntaxNodeHelper
 {
-    public static string AppendName(StringBuilder buffer, SyntaxNode node)
+    /// <summary>
+    /// Gets the hint path - <see cref="AppendMemberIndex"/> are appended to the path of the node.
+    /// A drive letter is removed.
+    /// </summary>
+    /// <example>
+    /// [node path]  [indexes] [hint path]
+    /// name.cs             1        scriban/name-1.cs
+    /// folder/sub/name.cs  1, 2, 3  scriban/folder/sub/name-1-2-3.cs
+    /// C:/folder/name.cs   0, 0     scriban/folder/name-0-0.cs
+    /// </example>
+    public static string GetHintPath(MemberDeclarationSyntax node, StringBuilder buffer)
     {
         buffer.Clear();
 
-        appendTypeName(buffer, node);
+        // I want to use AsSpan() if ending support for netstandard2.0.
+        var path = node.GetLocation().GetMappedLineSpan().Path;
 
-        // file name + line number
-        var span = node.GetLocation().GetMappedLineSpan();
-        var filename = Path.GetFileNameWithoutExtension(span.Path);
-        buffer.Append($"[{filename}]{span.StartLinePosition.Line}.cs");
+        var start = 0;
+        var end = 0;
+
+        // remove drive letter.
+        if (path.IndexOf(':') is var i and >= 0) start = i + 1;
+
+        // remove / at start position.
+        if (start < path.Length && path[start] is '/' or '\\') start++;
+
+        // remove extension.
+        if (path.EndsWith(".cs")) end = 3;
+
+        // "scriban/" + path without extension + indexes + ".cs"
+        buffer.Append("scriban/");
+        path = path.Substring(start, path.Length - end);
+        buffer.Append(path);
+        AppendMemberIndex(node, buffer);
+        buffer.Append(".cs");
 
         return buffer.ToString();
+    }
 
-        static bool appendTypeName(StringBuilder sb, SyntaxNode? node)
+    /// <summary>
+    /// Appends the index of the member in the parent.Members recursively.
+    /// </summary>
+    /// <example>
+    /// using A;
+    /// using B;
+    /// 
+    /// partial class X;  // 0
+    /// partial class X;  // 1
+    /// partial struct Y; // 2
+    /// 
+    /// namespace C // 3
+    /// {
+    ///     class Y; // 3-0
+    /// }
+    /// 
+    /// namespace C // 4
+    /// {
+    ///     class Z // 4-0
+    ///     {
+    ///         public partial class A;  // 4-0-0
+    ///         public partial struct B; // 4-0-1
+    ///         public partial class A;  // 4-0-2
+    ///     }
+    /// }
+    /// </example>
+    private static void AppendMemberIndex(MemberDeclarationSyntax node, StringBuilder buffer)
+    {
+        var p = node.Parent;
+
+        if (p is MemberDeclarationSyntax md) AppendMemberIndex(md, buffer);
+
+        var members = p switch
         {
-            if (node is BaseNamespaceDeclarationSyntax ns)
-            {
-                if (appendTypeName(sb, node.Parent)) sb.Append('_');
+            CompilationUnitSyntax u => u.Members,
+            TypeDeclarationSyntax t => t.Members,
+            NamespaceDeclarationSyntax n => n.Members,
+            _ => [],
+        };
 
-                sb.Append($"{ns.Name}");
-
-                return true;
-            }
-            else if (node is TypeDeclarationSyntax t)
-            {
-                if (appendTypeName(sb, node.Parent)) sb.Append('_');
-
-                sb.Append($"{t.Identifier}");
-
-                if (t.TypeParameterList is { } tl)
-                {
-                    foreach (var t1 in tl.Parameters)
-                    {
-                        sb.Append($"`{t1.Identifier}");
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
+        buffer.Append('-');
+        buffer.Append(members.IndexOf(node));
     }
 
     public static int AppendDeclarations(StringBuilder sb, SyntaxNode? node)
